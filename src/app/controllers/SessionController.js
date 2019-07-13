@@ -14,21 +14,23 @@ class SessionController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validations Fails' });
+      return res.status(400).json({ error: 'Validation fails' });
     }
 
     const { email, password } = req.body;
+
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      res.status(401).json({ error: 'Usuário não encontrado.' });
+      return res.status(401).json({ error: 'User not found' });
     }
 
     if (!(await user.checkPassword(password))) {
-      return res.status(401).json({ error: 'Senha não existe.' });
+      return res.status(401).json({ error: 'Password does not match' });
     }
 
     const { id, name } = user;
+
     return res.json({
       user: {
         id,
